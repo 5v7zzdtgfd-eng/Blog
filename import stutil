@@ -1,0 +1,156 @@
+Используем первое изображение как рекламный баннер
+banner_img = "/mnt/data/a46b786be9f709d46d81c40d88d6b335-image.png"
+
+# Создаём структуру проекта Jekyll
+site_dir = "/mnt/data/simple-jekyll-blog"
+assets_img_dir = os.path.join(site_dir, "assets", "images")
+posts_dir = os.path.join(site_dir, "_posts")
+includes_dir = os.path.join(site_dir, "_includes")
+layouts_dir = os.path.join(site_dir, "_layouts")
+
+os.makedirs(assets_img_dir, exist_ok=True)
+os.makedirs(posts_dir, exist_ok=True)
+os.makedirs(includes_dir, exist_ok=True)
+os.makedirs(layouts_dir, exist_ok=True)
+
+# Копируем баннер
+shutil.copy(banner_img, os.path.join(assets_img_dir, "banner.png"))
+
+# _config.yml
+config_text = """
+title: Мой Jekyll блог
+email: your-email@example.com
+description: >- 
+  Пример блога на GitHub Pages с вставкой рекламы.
+baseurl: ""
+url: ""
+theme: minima
+"""
+
+with open(os.path.join(site_dir, "_config.yml"), "w") as f:
+    f.write(config_text.strip())
+
+# index.md (главная, вывод постов)
+index_md = """
+---
+layout: default
+title: Главная
+---
+
+<h1>Мой блог</h1>
+<ul>
+  {% for post in site.posts %}
+    <li><a href="{{ post.url }}">{{ post.title }}</a> <small>({{ post.date | date: "%d.%m.%Y" }})</small></li>
+  {% endfor %}
+</ul>
+"""
+
+with open(os.path.join(site_dir, "index.md"), "w") as f:
+    f.write(index_md.strip())
+
+# _layouts/default.html (шаблон с баннером)
+default_html = """
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8">
+    <title>{{ page.title }} - {{ site.title }}</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <style>
+      body { font-family: Arial, sans-serif; margin:0; padding:0; background:#f8f8f8; }
+      nav { background:#333; color:#fff; padding:1em; }
+      nav a { color:#fff; margin-right:1em; text-decoration:none; }
+      .container { max-width:700px; margin:2em auto; background:#fff; box-shadow:0 0 8px #ddd; border-radius:8px; padding:2em; }
+      .banner { text-align:center; margin-bottom:2em;}
+      .banner img { max-width:100%; height:auto; border-radius:6px; }
+      footer { text-align:center; color:#888; margin:2em 0 1em 0; font-size:90%;}
+    </style>
+  </head>
+  <body>
+    <nav>
+      <a href="{{ site.baseurl }}/">Главная</a>
+      <a href="{{ site.baseurl }}/about.html">О блоге</a>
+    </nav>
+    <div class="banner">
+      <a href="https://yandex.ru" target="_blank"><img src="{{ '/assets/images/banner.png' | relative_url }}" alt="Реклама"></a>
+    </div>
+    <div class="container">
+      {{ content }}
+    </div>
+    <footer>
+      &copy; 2024 {{ site.title }}
+    </footer>
+  </body>
+</html>
+"""
+
+with open(os.path.join(layouts_dir, "default.html"), "w") as f:
+    f.write(default_html.strip())
+
+# about.md (о блоге)
+about_md = """
+---
+layout: default
+title: О блоге
+---
+
+Здесь вы найдете интересные материалы и примеры для ведения блога на GitHub Pages!
+"""
+
+with open(os.path.join(site_dir, "about.md"), "w") as f:
+    f.write(about_md.strip())
+
+# Пример поста 1
+post1 = """
+---
+layout: default
+title: "10 советов для продуктивной работы"
+date: 2024-06-04
+---
+
+Эффективная работа — это результат правильной организации времени и задач. В этой статье я расскажу про 10 простых советов, которые помогут вам работать продуктивнее:  
+1. **Составляйте чек-листы задач.**  
+2. **Соблюдайте режим труда и отдыха.**  
+3. **Используйте техники управления временем.**  
+4. **Убирайте отвлекающие факторы.**  
+5. **Записывайте идеи.**  
+6. **Автоматизируйте рутину.**  
+7. **Учитесь расставлять приоритеты.**  
+8. **Не бойтесь делегировать задачи.**  
+9. **Развивайте полезные привычки.**  
+10. **Подводите итоги дня.**
+
+---
+Регулярное применение этих принципов поможет вам чувствовать себя увереннее и продуктивнее!
+"""
+
+with open(os.path.join(posts_dir, "2024-06-04-productive-tips.md"), "w") as f:
+    f.write(post1.strip())
+
+# Пример поста 2
+post2 = """
+---
+layout: default
+title: "Тестовая публикация"
+date: 2024-06-05
+---
+
+Это пример тестовой записи в блоге!
+
+**Жирный текст**, *курсив*, [ссылка](https://pages.github.com/).
+
+- Первый пункт
+- Второй пункт
+
+> Цитата для примера.
+
+Добавьте свои статьи по аналогии!
+"""
+
+with open(os.path.join(posts_dir, "2024-06-05-test-post.md"), "w") as f:
+    f.write(post2.strip())
+
+# Собираем zip архив
+shutil.make_archive("/mnt/data/simple-jekyll-blog", 'zip', site_dir)
+
+"/mnt/data/simple-jekyll-
